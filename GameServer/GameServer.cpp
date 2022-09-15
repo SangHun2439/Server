@@ -14,15 +14,28 @@
 #include <windows.h>
 #include <future>
 
+class Knight
+{
+public:
+	int32 _hp = rand() % 1000;
+};
+
 int main()
 {
 	for (int32 i = 0; i < 5; ++i)
 	{
 		GThreadManager->Launch([]()
 			{
-				Vector<int32> v(10);
-				Map<int32, int32> m;
-				this_thread::sleep_for(10ms);
+				while (true)
+				{
+					Knight* knight = xnew<Knight>();
+
+					cout << knight->_hp << endl;
+
+					this_thread::sleep_for(10ms);
+
+					xdelete(knight);
+				}
 			});
 	}
 	GThreadManager->Join();
