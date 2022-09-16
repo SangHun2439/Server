@@ -14,29 +14,43 @@
 #include <windows.h>
 #include <future>
 
-class Knight
+using TL = TypeList<class Player, class Knight, class Mage>;
+
+class Player
 {
 public:
-	int32 _hp = rand() % 1000;
+	Player() { INIT_TL(Player) }
+	virtual ~Player() {}
+	DECLARE_TL
+};
+
+class Knight : public Player
+{
+public:
+	Knight() { INIT_TL(Knight) }
+
+};
+
+class Mage : public Player
+{
+public:
+	Mage() { INIT_TL(Mage) }
 };
 
 int main()
 {
-	for (int32 i = 0; i < 5; ++i)
 	{
-		GThreadManager->Launch([]()
-			{
-				while (true)
-				{
-					Knight* knight = xnew<Knight>();
-
-					cout << knight->_hp << endl;
-
-					this_thread::sleep_for(10ms);
-
-					xdelete(knight);
-				}
-			});
+		Player* player = new Player();
+		bool canCast = CanCast<Knight*>(player);
+		Knight* knight = TypeCast<Knight*>(player);
+		delete player;
 	}
-	GThreadManager->Join();
+
+	{
+		shared_ptr<Player> player = MakeShared<Player>();
+
+		bool canCast = CanCast<Knight>(player);
+		shared_ptr<Knight> knight = TypeCast<Knight>(player);
+	}
+	
 }
