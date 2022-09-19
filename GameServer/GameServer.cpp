@@ -14,43 +14,41 @@
 #include <windows.h>
 #include <future>
 
-using TL = TypeList<class Player, class Knight, class Mage>;
-
-class Player
-{
-public:
-	Player() { INIT_TL(Player) }
-	virtual ~Player() {}
-	DECLARE_TL
-};
-
-class Knight : public Player
-{
-public:
-	Knight() { INIT_TL(Knight) }
-
-};
-
-class Mage : public Player
-{
-public:
-	Mage() { INIT_TL(Mage) }
-};
-
 int main()
 {
+	WSAData wsaData;
+	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+		return 0;
+
+	SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+	if (listenSocket == INVALID_SOCKET)
 	{
-		Player* player = new Player();
-		bool canCast = CanCast<Knight*>(player);
-		Knight* knight = TypeCast<Knight*>(player);
-		delete player;
+		int32 errCode = ::WSAGetLastError();
+		cout << "Socket ErrCode : " << errCode << endl;
+		return 0;
 	}
 
-	{
-		shared_ptr<Player> player = MakeShared<Player>();
+	u_long on;
+	if (::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET)
+		return 0;
 
-		bool canCast = CanCast<Knight>(player);
-		shared_ptr<Knight> knight = TypeCast<Knight>(player);
-	}
+	SOCKADDR_IN serverAddr;
+	::memset(&serverAddr, 0, sizeof(serverAddr));
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
+	serverAddr.sin_port = ::htons(7777);
+
+	if (::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
+		return 0;
+
+	if (::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
+		return 0;
+
+	cout << "Accept" << endl;
+
+	// Select 모델 = (select 함수가 핵심이 되는)
 	
+
+	// 윈속 종료
+	::WSACleanup();
 }
