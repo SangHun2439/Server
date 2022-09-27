@@ -24,11 +24,14 @@ void DeadLockProfiler::PushLock(const char* name)
 	{
 		// 기존에 발견되지 않은 케이스면 데드락 여부 확인
 		const int32 prevId = LLockStack.top();
-		set<int32>& history = _lockHistory[prevId];
-		if (history.find(lockId) == history.end())
+		if (lockId != prevId)
 		{
-			history.insert(lockId);
-			CheckCycle();
+			set<int32>& history = _lockHistory[prevId];
+			if (history.find(lockId) == history.end())
+			{
+				history.insert(lockId);
+				CheckCycle();
+			}
 		}
 	}
 
@@ -60,7 +63,6 @@ void DeadLockProfiler::CheckCycle()
 	for (int32 lockId = 0; lockId < lockCount; ++lockId)
 		Dfs(lockId);
 
-	_discoveredCount = 0;
 	_discoveredOrder.clear();
 	_finished.clear();
 	_parent.clear();
@@ -96,16 +98,17 @@ void DeadLockProfiler::Dfs(int32 here)
 
 		if (_finished[there] == false)
 		{
-			cout << _idToName[here] << " -> " << _idToName[there] << endl;
+			printf("%s -> %s\n", _idToName[here], _idToName[there]);
 
 			int32 now = here;
 			while (true)
 			{
-				cout << _idToName[_parent[now]] << " -> " << _idToName[now] << endl;
+				if (_parent[now] == -1)
+					break;
+				printf("%s -> %s\n", _idToName[_parent[now]], _idToName[now]);
 				now = _parent[now];
 				if (now == there)
 					break;
-
 			}
 			CRASH("DEADLOCK_DETECTED");
 		}

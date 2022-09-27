@@ -2,6 +2,7 @@
 
 #include "Types.h"
 #include "Allocator.h"
+#include <array>
 #include <vector>
 #include <list>
 #include <queue>
@@ -12,6 +13,9 @@
 #include <unordered_set>
 using namespace std;
 
+template<typename Type, uint32 Size>
+using Array = array<Type, Size>;
+
 template<typename Type>
 using Vector = vector<Type, StlAllocator<Type>>;
 
@@ -19,10 +23,10 @@ template<typename Type>
 using List = list<Type, StlAllocator<Type>>;
 
 template<typename Key, typename Type, typename Pred = less<Key>>
-using Map = map<Key, Type, Pred, StlAllocator<Type>>;
+using Map = map<Key, Type, Pred, StlAllocator<pair<const Key, Type>>>;
 
 template<typename Key, typename Pred = less<Key>>
-using Set = set<Key, StlAllocator<Key>>;
+using Set = set<Key, Pred, StlAllocator<Key>>;
 
 template<typename Type>
 using Deque = deque<Type, StlAllocator<Type>>;

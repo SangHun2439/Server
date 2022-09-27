@@ -5,6 +5,7 @@ class Session;
 enum class EventType : uint8
 {
 	Connect,
+	Disconnect,
 	Accept,
 	Recv,
 	Send
@@ -19,10 +20,11 @@ public:
 	IocpEvent(EventType type);
 
 	void		Init();
-	EventType	GetType() { return _type; }
+	EventType	GetType() { return _eventType; }
 
-protected:
-	EventType	_type;
+public:
+	EventType		_eventType;
+	IocpObjectRef	_owner;
 };
 
 /*---------------------
@@ -36,6 +38,16 @@ public:
 
 
 /*---------------------
+*	   DisconnectEvent
+-----------------------*/
+class DisconnectEvent : public IocpEvent
+{
+public:
+	DisconnectEvent() : IocpEvent(EventType::Disconnect) { }
+};
+
+
+/*---------------------
 *		AcceptEvent
 -----------------------*/
 class AcceptEvent : public IocpEvent
@@ -43,10 +55,8 @@ class AcceptEvent : public IocpEvent
 public:
 	AcceptEvent() : IocpEvent(EventType::Accept) { }
 
-	void		SetSession(Session* session) { _session = session; }
-	Session*	GetSession() { return _session; }
-private:
-	Session*	_session = nullptr;
+public:
+	SessionRef	_session = nullptr;
 };
 
 /*---------------------
@@ -65,4 +75,6 @@ class SendEvent : public IocpEvent
 {
 public:
 	SendEvent() : IocpEvent(EventType::Send) { }
+
+	vector<SendBufferRef>	sendBuffers;
 };
