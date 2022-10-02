@@ -8,6 +8,7 @@
 
 #include <windows.h>
 #include <iostream>
+
 using namespace std;
 
 #include <WinSock2.h>
@@ -20,3 +21,5 @@ using namespace std;
 #include "TypeCast.h"
 #include "Memory.h"
 #include "SendBuffer.h"
+#include "Session.h"
+#include "LockQueue.h"
