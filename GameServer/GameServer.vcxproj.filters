@@ -13,6 +13,9 @@
     <Filter Include="GameContents">
       <UniqueIdentifier>{9443c0ba-86af-43ef-a732-0d831bc9b04b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DB">
+      <UniqueIdentifier>{731aea98-60e3-4f4c-ae8f-b417642fc063}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -80,6 +83,9 @@
     <ClInclude Include="ServerGlobal.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="GenProcedures.h">
+      <Filter>DB</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Protobuf\bin\Struct.proto">
@@ -94,5 +100,13 @@
     <None Include="..\Common\Protobuf\bin\GenPackets.bat">
       <Filter>Protocol</Filter>
     </None>
+    <None Include="..\Common\Procedures\GenProcs.bat">
+      <Filter>DB</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="GameDB.xml">
+      <Filter>DB</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

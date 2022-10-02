@@ -5,6 +5,10 @@
 class GameSession : public PacketSession
 {
 public:
+	GameSession()
+	{
+		cout << "GameSession" << endl;
+	}
 	~GameSession()
 	{
 		cout << "~GameSession" << endl;
